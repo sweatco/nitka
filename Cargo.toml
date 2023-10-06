@@ -1,0 +1,9 @@
+[package]
+name = "integration-utils"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+anyhow = "1.0.75"
