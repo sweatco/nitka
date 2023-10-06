@@ -4,6 +4,8 @@ use std::{
     sync::atomic::AtomicBool,
 };
 
+use anyhow::bail;
+
 static CONTRACT_READY: AtomicBool = AtomicBool::new(false);
 
 /// Compile contract in release mode and prepare it for integration tests usage
@@ -12,12 +14,23 @@ pub fn build_contract() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    Command::new("make")
+    // Assuming that the Makefile is in root repository directory
+    let output = Command::new("git").args(["rev-parse", "--show-toplevel"]).output()?;
+    assert!(output.status.success(), "Failed to get Git repository root path");
+    let git_root = String::from_utf8_lossy(&output.stdout)
+        .trim_end_matches('\n')
+        .to_string();
+
+    let output = Command::new("make")
         .arg("build")
-        // .current_dir("..")
+        .current_dir(git_root)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .output()?;
+
+    if !output.status.success() {
+        bail!("Failed to build contract");
+    }
 
     CONTRACT_READY.store(true, Ordering::Relaxed);
 
