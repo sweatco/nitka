@@ -8,6 +8,12 @@ build: ##@Build Build the library.
 test: ##@Test Test the library.
 	cargo test --all
 
+fmt: ##@Chores Format the code using rustfmt nightly.
+	cargo +nightly fmt --all
+
+lint: ##@Chores Run lint checks with Clippy.
+	./scripts/lint.sh
+
 HELP_FUN = \
     %help; while(<>){push@{$$help{$$2//'options'}},[$$1,$$3] \
     if/^([\w-_]+)\s*:.*\#\#(?:@(\w+))?\s(.*)$$/}; \
