@@ -1,7 +1,11 @@
 use std::{collections::HashMap, env, fs};
 
 use near_units::parse_near;
-use workspaces::{network::Sandbox, Account, Contract, Worker};
+use workspaces::{
+    network::{Sandbox, Testnet},
+    prelude::TopLevelAccountCreator,
+    Account, Contract, DevNetwork, Worker,
+};
 
 use crate::build::build_contract;
 
@@ -9,25 +13,36 @@ const EPOCH_BLOCKS_HEIGHT: u64 = 43_200;
 const HOURS_PER_EPOCH: u64 = 12;
 const ONE_HOUR_BLOCKS_HEIGHT: u64 = EPOCH_BLOCKS_HEIGHT / HOURS_PER_EPOCH;
 
-pub struct Context {
-    worker: Worker<Sandbox>,
+pub struct Context<T> {
+    worker: Worker<T>,
     root_account: Account,
     pub accounts: HashMap<String, Account>,
     pub contracts: HashMap<&'static str, Contract>,
 }
 
-impl Context {
-    pub async fn new(names: &[&'static str]) -> anyhow::Result<Context> {
+impl Context<Sandbox> {
+    pub async fn new(contracts: &[&'static str]) -> anyhow::Result<Self> {
+        Self::with_worker(contracts, workspaces::sandbox().await?).await
+    }
+}
+
+impl Context<Testnet> {
+    pub async fn new(contracts: &[&'static str]) -> anyhow::Result<Self> {
+        Self::with_worker(contracts, workspaces::testnet().await?).await
+    }
+}
+
+impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
+    async fn with_worker(contract_names: &[&'static str], worker: Worker<T>) -> anyhow::Result<Self> {
         println!("🏭 Initializing context");
 
         build_contract()?;
 
-        let worker = workspaces::sandbox().await?;
         let root_account = worker.dev_create_account().await?;
 
         let mut contracts = HashMap::<&'static str, Contract>::new();
 
-        for name in names {
+        for name in contract_names {
             let contract = worker
                 .dev_deploy(&Self::load_wasm(&format!("../res/{name}.wasm")))
                 .await?;
@@ -66,7 +81,9 @@ impl Context {
         let wasm_filepath = fs::canonicalize(current_dir.join(wasm_path)).expect("Failed to get wasm file path");
         fs::read(wasm_filepath).expect("Failed to load wasm")
     }
+}
 
+impl Context<Sandbox> {
     pub async fn fast_forward_hours(&self, hours: u64) -> anyhow::Result<()> {
         let blocks_to_advance = ONE_HOUR_BLOCKS_HEIGHT * hours;
 
