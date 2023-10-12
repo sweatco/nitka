@@ -29,7 +29,7 @@ pub fn build_contract() -> anyhow::Result<()> {
         .output()?;
 
     if !output.status.success() {
-        bail!("Failed to build contract");
+        bail!("Failed to build contract. Output: {output:?}");
     }
 
     CONTRACT_READY.store(true, Ordering::Relaxed);
