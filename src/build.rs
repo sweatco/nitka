@@ -1,16 +1,17 @@
-use core::sync::atomic::Ordering;
 use std::{
     process::{Command, Stdio},
-    sync::atomic::AtomicBool,
+    sync::Mutex,
 };
 
 use anyhow::bail;
 
-static CONTRACT_READY: AtomicBool = AtomicBool::new(false);
+static CONTRACT_READY: Mutex<bool> = Mutex::new(false);
 
 /// Compile contract in release mode and prepare it for integration tests usage
 pub fn build_contract() -> anyhow::Result<()> {
-    if CONTRACT_READY.load(Ordering::Relaxed) {
+    let mut ready = CONTRACT_READY.lock().unwrap();
+
+    if *ready {
         return Ok(());
     }
 
@@ -32,19 +33,25 @@ pub fn build_contract() -> anyhow::Result<()> {
         bail!("Failed to build contract. Output: {output:?}");
     }
 
-    CONTRACT_READY.store(true, Ordering::Relaxed);
+    *ready = true;
 
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
+    use std::thread::spawn;
+
+    use itertools::Itertools;
+
     use crate::build::build_contract;
 
-    #[test]
-    fn test_build_contract() -> anyhow::Result<()> {
-        build_contract()?;
-        build_contract()?;
-        build_contract()
+    #[tokio::test]
+    async fn test_build_contract() -> anyhow::Result<()> {
+        let handles = (0..10).map(|_| spawn(|| build_contract().unwrap())).collect_vec();
+
+        handles.into_iter().for_each(|handle| handle.join().unwrap());
+
+        Ok(())
     }
 }
