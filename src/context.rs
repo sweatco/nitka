@@ -1,7 +1,7 @@
 use std::{collections::HashMap, env, fs};
 
 use near_units::parse_near;
-use workspaces::{
+use near_workspaces::{
     network::{Sandbox, Testnet},
     prelude::TopLevelAccountCreator,
     Account, Contract, DevNetwork, Worker,
@@ -22,13 +22,13 @@ pub struct Context<T> {
 
 impl Context<Sandbox> {
     pub async fn new(contracts: &[&'static str]) -> anyhow::Result<Self> {
-        Self::with_worker(contracts, workspaces::sandbox().await?).await
+        Self::with_worker(contracts, near_workspaces::sandbox().await?).await
     }
 }
 
 impl Context<Testnet> {
     pub async fn new(contracts: &[&'static str]) -> anyhow::Result<Self> {
-        Self::with_worker(contracts, workspaces::testnet().await?).await
+        Self::with_worker(contracts, near_workspaces::testnet().await?).await
     }
 }
 

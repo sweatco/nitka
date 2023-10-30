@@ -2,8 +2,8 @@ use std::future::Future;
 
 use futures::future::join_all;
 use itertools::Itertools;
+use near_workspaces::types::Gas;
 use tokio::spawn;
-use workspaces::types::Gas;
 
 pub async fn scoped_command_measure<Input, Inputs, Command, Fut>(
     inputs: Inputs,

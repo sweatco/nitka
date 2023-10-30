@@ -3,7 +3,7 @@ use std::mem::{size_of, MaybeUninit};
 use anyhow::Result;
 use async_trait::async_trait;
 use near_sdk::serde::{de::DeserializeOwned, Serialize};
-use workspaces::{operations::CallTransaction, Account, Contract};
+use near_workspaces::{operations::CallTransaction, Account, Contract};
 
 #[async_trait]
 pub trait IntegrationContract<'a> {
@@ -23,7 +23,7 @@ pub trait IntegrationContract<'a> {
     }
 }
 
-async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(tx: CallTransaction<'_>, args: P) -> Result<T> {
+async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(tx: CallTransaction, args: P) -> Result<T> {
     let result = tx.args_json(args).max_gas().transact().await?.into_result()?;
 
     println!("Result: {:?}", result);
