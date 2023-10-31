@@ -8,7 +8,7 @@ use anyhow::bail;
 static CONTRACT_READY: Mutex<bool> = Mutex::new(false);
 
 /// Compile contract in release mode and prepare it for integration tests usage
-pub fn build_contract() -> anyhow::Result<()> {
+pub fn build_contract(make_command: Option<&str>) -> anyhow::Result<()> {
     let mut ready = CONTRACT_READY.lock().unwrap();
 
     if *ready {
@@ -23,7 +23,7 @@ pub fn build_contract() -> anyhow::Result<()> {
         .to_string();
 
     let output = Command::new("make")
-        .arg("build")
+        .arg(make_command.unwrap_or("build"))
         .current_dir(git_root)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
@@ -48,7 +48,7 @@ mod test {
 
     #[tokio::test]
     async fn test_build_contract() -> anyhow::Result<()> {
-        let handles = (0..10).map(|_| spawn(|| build_contract().unwrap())).collect_vec();
+        let handles = (0..10).map(|_| spawn(|| build_contract(None).unwrap())).collect_vec();
 
         handles.into_iter().for_each(|handle| handle.join().unwrap());
 
