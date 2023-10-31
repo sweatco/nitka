@@ -1,9 +1,9 @@
 use std::{collections::HashMap, env, fs};
 
-use near_units::parse_near;
 use near_workspaces::{
     network::{Sandbox, Testnet},
     prelude::TopLevelAccountCreator,
+    types::NearToken,
     Account, Contract, DevNetwork, Worker,
 };
 
@@ -63,7 +63,7 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
             let account = self
                 .root_account
                 .create_subaccount(name)
-                .initial_balance(parse_near!("3 N"))
+                .initial_balance(NearToken::from_near(3))
                 .transact()
                 .await?
                 .into_result()?;
