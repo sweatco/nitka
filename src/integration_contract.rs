@@ -8,7 +8,7 @@ use near_workspaces::{operations::CallTransaction, Account, Contract};
 #[async_trait]
 pub trait IntegrationContract<'a> {
     fn with_contract(contract: &'a Contract) -> Self;
-    fn with_user(self, account: &Account) -> Self;
+    fn with_user(&mut self, account: &Account) -> &mut Self;
     fn user_account(&self) -> Account;
     fn contract(&self) -> &'a Contract;
 
@@ -26,7 +26,7 @@ pub trait IntegrationContract<'a> {
 async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(tx: CallTransaction, args: P) -> Result<T> {
     let result = tx.args_json(args).max_gas().transact().await?.into_result()?;
 
-    println!("Result: {:?}", result);
+    println!("Result: {result:?}");
 
     if size_of::<T>() == 0 {
         // For cases when return type is `()` and we don't need to parse result.
