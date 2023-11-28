@@ -9,17 +9,18 @@ use near_workspaces::{operations::CallTransaction, Account, Contract};
 pub trait IntegrationContract<'a> {
     fn with_contract(contract: &'a Contract) -> Self;
     fn with_user(&mut self, account: &Account) -> &mut Self;
-    fn user_account(&self) -> Account;
+    fn user_account(&self) -> Option<Account>;
     fn contract(&self) -> &'a Contract;
 
-    async fn call_contract<T: DeserializeOwned, P: Serialize + Send>(&self, method: &str, args: P) -> Result<T> {
+    async fn call<T: DeserializeOwned, P: Serialize + Send>(&self, method: &str, args: P) -> Result<T> {
         println!("▶️ {method}");
-        invoke_transaction(self.contract().call(method), args).await
-    }
 
-    async fn call_user<T: DeserializeOwned, P: Serialize + Send>(&self, method: &str, args: P) -> Result<T> {
-        println!("▶️ {method}");
-        invoke_transaction(self.user_account().call(self.contract().id(), method), args).await
+        if let Some(user_account) = self.user_account() {
+            println!("Calling with account: {:?}", user_account);
+            return invoke_transaction(user_account.call(self.contract().id(), method), args).await;
+        }
+
+        invoke_transaction(self.contract().call(method), args).await
     }
 }
 
