@@ -12,8 +12,8 @@ use crate::build::build_contract;
 const ONE_MINUTE_BLOCKS_HEIGHT: u64 = 240;
 
 pub struct Context<T> {
-    worker: Worker<T>,
     root_account: Account,
+    pub worker: Worker<T>,
     pub accounts: HashMap<String, Account>,
     pub contracts: HashMap<&'static str, Contract>,
 }
@@ -55,8 +55,8 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
         }
 
         Ok(Context {
-            worker,
             root_account,
+            worker,
             accounts: HashMap::new(),
             contracts,
         })
