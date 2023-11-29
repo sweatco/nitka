@@ -42,24 +42,31 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
 
         let root_account = worker.dev_create_account().await?;
 
+        let mut context = Context {
+            root_account,
+            worker: worker.clone(),
+            accounts: HashMap::new(),
+            contracts: HashMap::new(),
+        };
+
         let mut contracts = HashMap::<&'static str, Contract>::new();
 
         for name in contract_names {
-            let contract = worker
-                .dev_deploy(&Self::load_wasm(&format!("../res/{name}.wasm")))
-                .await?;
+            let account = context.account(name).await?;
+
+            let contract = account
+                .deploy(&Self::load_wasm(&format!("../res/{name}.wasm")))
+                .await?
+                .into_result()?;
 
             println!("@@ contract {} deployed to {}", name, contract.id());
 
             contracts.insert(name, contract);
         }
 
-        Ok(Context {
-            root_account,
-            worker,
-            accounts: HashMap::new(),
-            contracts,
-        })
+        context.contracts = contracts;
+
+        Ok(context)
     }
 
     pub async fn account(&mut self, name: &str) -> anyhow::Result<Account> {
