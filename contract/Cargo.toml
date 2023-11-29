@@ -1,0 +1,28 @@
+[package]
+name = "my-contract"
+version = "1.0.0"
+authors = ["Sweat Economy"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+default = []
+integration-test = []
+
+[dependencies]
+ed25519-dalek = { workspace = true }
+mutants = { workspace = true }
+
+near-sdk = { workspace = true }
+near-self-update = { workspace = true }
+near-contract-standards = { workspace = true }
+
+model = { workspace = true }
+
+[dev-dependencies]
+fake = { workspace = true }
+rand = { workspace = true }
+sha256 = { workspace = true }
+base64 = { workspace = true }

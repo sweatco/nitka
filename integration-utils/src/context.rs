@@ -59,6 +59,8 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
                 .await?
                 .into_result()?;
 
+            // worker.dev_deploy()
+
             println!("@@ contract {} deployed to {}", name, contract.id());
 
             contracts.insert(name, contract);

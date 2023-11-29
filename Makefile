@@ -5,14 +5,22 @@ help: ##@Miscellaneous Show this help
 build: ##@Build Build the library.
 	cargo build --all
 
-test: ##@Test Test the library.
-	cargo test --all
+build-integration: ##@Build Build the contract for integration tests.
+	./scripts/build-integration.sh
 
 fmt: ##@Chores Format the code using rustfmt nightly.
 	cargo +nightly fmt --all
 
 lint: ##@Chores Run lint checks with Clippy.
 	./scripts/lint.sh
+
+test: ##@Testing Test the library.
+	cargo test --all
+
+integration: ##@Testing Run integration tests.
+	cargo test --package integration-tests
+
+int: integration ##@Testing Shorthand for `integration`
 
 HELP_FUN = \
     %help; while(<>){push@{$$help{$$2//'options'}},[$$1,$$3] \
