@@ -16,7 +16,7 @@ pub trait IntegrationContract<'a> {
         println!("▶️ {method}");
 
         if let Some(user_account) = self.user_account() {
-            println!("Calling with account: {:?}", user_account);
+            println!("Calling with account: {user_account:?}");
             return invoke_transaction(user_account.call(self.contract().id(), method), args).await;
         }
 

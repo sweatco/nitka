@@ -59,8 +59,6 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
                 .await?
                 .into_result()?;
 
-            // worker.dev_deploy()
-
             println!("@@ contract {} deployed to {}", name, contract.id());
 
             contracts.insert(name, contract);
@@ -76,7 +74,7 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
             let account = self
                 .root_account
                 .create_subaccount(name)
-                .initial_balance(NearToken::from_near(3))
+                .initial_balance(NearToken::from_near(10))
                 .transact()
                 .await?
                 .into_result()?;
