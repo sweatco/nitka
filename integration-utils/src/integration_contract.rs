@@ -17,24 +17,34 @@ pub trait IntegrationContract<'a> {
 
         if let Some(user_account) = self.user_account() {
             println!("Calling with account: {user_account:?}");
-            return invoke_transaction(user_account.call(self.contract().id(), method), args).await;
+            return invoke_transaction(method, user_account.call(self.contract().id(), method), args).await;
         }
 
-        invoke_transaction(self.contract().call(method), args).await
+        invoke_transaction(method, self.contract().call(method), args).await
     }
 }
 
-async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(tx: CallTransaction, args: P) -> Result<T> {
+async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(
+    method: &str,
+    tx: CallTransaction,
+    args: P,
+) -> Result<T> {
     let result = tx.args_json(args).max_gas().transact().await?.into_result()?;
 
-    println!("Result: {result:?}");
+    println!("Result: {result:#?}");
 
-    if size_of::<T>() == 0 {
+    let result = if size_of::<T>() == 0 {
         // For cases when return type is `()` and we don't need to parse result.
         // This call is safe for zero sized types.
         #[allow(clippy::uninit_assumed_init)]
-        Ok(unsafe { MaybeUninit::uninit().assume_init() })
+        unsafe {
+            MaybeUninit::uninit().assume_init()
+        }
     } else {
-        Ok(result.json()?)
-    }
+        result.json()?
+    };
+
+    println!("✅ {method}: OK");
+
+    Ok(result)
 }
