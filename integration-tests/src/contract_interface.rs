@@ -24,6 +24,10 @@ impl ContractApiIntegration for MyContract<'_> {
     async fn data(&mut self) -> Result<Vec<String>> {
         self.call("data", ()).await
     }
+
+    async fn log_and_panic(&mut self) -> Result<()> {
+        self.call("log_and_panic", ()).await
+    }
 }
 
 impl<'a> IntegrationContract<'a> for MyContract<'a> {

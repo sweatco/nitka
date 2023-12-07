@@ -4,7 +4,7 @@ use model::api::ContractApi;
 use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},
     collections::{LookupMap, UnorderedMap, UnorderedSet, Vector},
-    near_bindgen, AccountId, BorshStorageKey, PanicOnDefault,
+    env, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault,
 };
 
 #[derive(BorshStorageKey, BorshSerialize)]
@@ -62,5 +62,11 @@ impl ContractApi for Contract {
 
     fn data(&mut self) -> Vec<String> {
         self.some_data.clone()
+    }
+
+    fn log_and_panic(&mut self) {
+        env::log_str("Hello!");
+        env::log_str("Panic!");
+        panic!("A")
     }
 }

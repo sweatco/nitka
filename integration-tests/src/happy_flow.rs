@@ -17,3 +17,19 @@ async fn happy_flow() -> anyhow::Result<()> {
 
     Ok(())
 }
+
+#[tokio::test]
+#[mutants::skip]
+async fn log_after_panic() -> anyhow::Result<()> {
+    println!("👷🏽 Run log_after_panic test");
+
+    let context = prepare_contract().await?;
+
+    let Err(err) = context.my_contract().log_and_panic().await else {
+        unreachable!()
+    };
+
+    assert!(err.to_string().contains("Smart contract panicked"));
+
+    Ok(())
+}

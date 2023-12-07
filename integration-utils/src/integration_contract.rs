@@ -29,9 +29,11 @@ async fn invoke_transaction<T: DeserializeOwned, P: Serialize + Send>(
     tx: CallTransaction,
     args: P,
 ) -> Result<T> {
-    let result = tx.args_json(args).max_gas().transact().await?.into_result()?;
+    let result = tx.args_json(args).max_gas().transact().await;
 
     println!("Result: {result:#?}");
+
+    let result = result?.into_result()?;
 
     let result = if size_of::<T>() == 0 {
         // For cases when return type is `()` and we don't need to parse result.
