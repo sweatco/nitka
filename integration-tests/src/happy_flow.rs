@@ -11,9 +11,9 @@ async fn happy_flow() -> anyhow::Result<()> {
 
     let context = prepare_contract().await?;
 
-    assert_eq!(555, context.my_contract().test().await?);
+    assert_eq!(555, context.my_contract().test().call().await?);
 
-    dbg!(context.my_contract().data().await?);
+    dbg!(context.my_contract().data().call().await?);
 
     Ok(())
 }
@@ -25,7 +25,7 @@ async fn log_after_panic() -> anyhow::Result<()> {
 
     let context = prepare_contract().await?;
 
-    let Err(err) = context.my_contract().log_and_panic().await else {
+    let Err(err) = context.my_contract().log_and_panic().call().await else {
         unreachable!()
     };
 

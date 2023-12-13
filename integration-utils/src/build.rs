@@ -42,13 +42,12 @@ pub fn build_contract(make_command: Option<&str>) -> anyhow::Result<()> {
 mod test {
     use std::thread::spawn;
 
-    use itertools::Itertools;
 
     use crate::build::build_contract;
 
     #[tokio::test]
     async fn test_build_contract() -> anyhow::Result<()> {
-        let handles = (0..10).map(|_| spawn(|| build_contract(None).unwrap())).collect_vec();
+        let handles: Vec<_> = (0..10).map(|_| spawn(|| build_contract(None).unwrap())).collect();
 
         handles.into_iter().for_each(|handle| handle.join().unwrap());
 

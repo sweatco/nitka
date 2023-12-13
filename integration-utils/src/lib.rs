@@ -4,3 +4,4 @@ pub mod integration_contract;
 pub mod measure;
 pub mod misc;
 mod tests;
+pub mod contract_call;

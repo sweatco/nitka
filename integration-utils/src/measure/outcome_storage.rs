@@ -4,7 +4,6 @@ use std::{
     sync::{Mutex, MutexGuard},
 };
 
-use itertools::Itertools;
 use near_workspaces::{
     result::{ExecutionOutcome, ExecutionSuccess},
     types::Gas,
@@ -40,13 +39,7 @@ impl OutcomeStorage {
 
     fn stop_measuring(account: &Account) {
         let mut measuring = Self::get_measuring();
-
-        let index = measuring
-            .iter()
-            .find_position(|a| a == &account.id().as_str())
-            .unwrap()
-            .0;
-        measuring.remove(index);
+        measuring.retain_mut(|a| a != account.id().as_str());
     }
 
     /// Execute command and measure total gas price

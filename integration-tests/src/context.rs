@@ -39,7 +39,7 @@ impl IntegrationContext for Context {
 pub(crate) async fn prepare_contract() -> anyhow::Result<Context> {
     let context = Context::new(&[MY_CONTRACT], "build-integration".into()).await?;
 
-    context.my_contract().new().await?;
+    context.my_contract().new().call().await?;
 
     Ok(context)
 }

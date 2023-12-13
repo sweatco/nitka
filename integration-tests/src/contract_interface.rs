@@ -1,8 +1,7 @@
-use anyhow::Result;
-use async_trait::async_trait;
-use integration_utils::integration_contract::IntegrationContract;
+use integration_utils::{integration_contract::IntegrationContract};
 use model::api::ContractApiIntegration;
 use near_workspaces::{Account, Contract};
+use integration_utils::contract_call::ContractCall;
 
 pub const MY_CONTRACT: &str = "my_contract";
 
@@ -11,22 +10,21 @@ pub struct MyContract<'a> {
     account: Option<Account>,
 }
 
-#[async_trait]
 impl ContractApiIntegration for MyContract<'_> {
-    async fn new(&self) -> Result<()> {
-        self.call("new", ()).await
+    fn new(&self) -> ContractCall<()> {
+        self.make_call("new")
     }
 
-    async fn test(&mut self) -> Result<u32> {
-        self.call("test", ()).await
+    fn test(&mut self) -> ContractCall<u32> {
+        self.make_call("test")
     }
 
-    async fn data(&mut self) -> Result<Vec<String>> {
-        self.call("data", ()).await
+    fn data(&mut self) -> ContractCall<Vec<String>> {
+        self.make_call("data")
     }
 
-    async fn log_and_panic(&mut self) -> Result<()> {
-        self.call("log_and_panic", ()).await
+    fn log_and_panic(&mut self) -> ContractCall<()> {
+        self.make_call("log_and_panic")
     }
 }
 

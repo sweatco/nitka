@@ -15,5 +15,8 @@ cargo clippy --all \
   -A clippy::module-inception \
   -A clippy::missing-panics-doc \
   -A clippy::must-use-candidate \
+  -A clippy::return-self-not-must-use \
+  -A clippy::new-ret-no-self \
+  -A clippy::wrong-self-convention \
   \
   -D warnings

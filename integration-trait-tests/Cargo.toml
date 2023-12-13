@@ -1,0 +1,15 @@
+[package]
+name = "integration-trait-tests"
+version = "1.0.0"
+authors = ["Sweat Economy"]
+edition = "2021"
+
+[lib]
+
+
+[dependencies]
+anyhow = "1.0.75"
+near-sdk = "4.1.1"
+async-trait = "0.1.74"
+integration-utils = { workspace = true }
+integration-trait = { workspace = true }

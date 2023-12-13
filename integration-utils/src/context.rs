@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, fs};
+use std::collections::HashMap;
 
 use near_workspaces::{
     network::{Sandbox, Testnet},
@@ -7,7 +7,7 @@ use near_workspaces::{
     Account, Contract, DevNetwork, Worker,
 };
 
-use crate::build::build_contract;
+use crate::{build::build_contract, misc::load_wasm};
 
 const ONE_MINUTE_BLOCKS_HEIGHT: u64 = 240;
 
@@ -55,7 +55,7 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
             let account = context.account(name).await?;
 
             let contract = account
-                .deploy(&Self::load_wasm(&format!("../res/{name}.wasm")))
+                .deploy(&load_wasm(&format!("../res/{name}.wasm")))
                 .await?
                 .into_result()?;
 
@@ -83,12 +83,6 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
         }
 
         Ok(self.accounts.get(name).unwrap().clone())
-    }
-
-    fn load_wasm(wasm_path: &str) -> Vec<u8> {
-        let current_dir = env::current_dir().expect("Failed to get current dir");
-        let wasm_filepath = fs::canonicalize(current_dir.join(wasm_path)).expect("Failed to get wasm file path");
-        fs::read(wasm_filepath).expect("Failed to load wasm")
     }
 }
 
