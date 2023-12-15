@@ -1,7 +1,6 @@
-use integration_utils::{integration_contract::IntegrationContract};
+use integration_utils::{contract_call::ContractCall, integration_contract::IntegrationContract};
 use model::api::ContractApiIntegration;
 use near_workspaces::{Account, Contract};
-use integration_utils::contract_call::ContractCall;
 
 pub const MY_CONTRACT: &str = "my_contract";
 

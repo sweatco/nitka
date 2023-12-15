@@ -1,7 +1,4 @@
-use std::{
-    marker::PhantomData,
-    mem::{size_of, MaybeUninit},
-};
+use std::marker::PhantomData;
 
 use anyhow::Result;
 use near_sdk::{
@@ -10,9 +7,12 @@ use near_sdk::{
 };
 use near_workspaces::{
     operations::CallTransaction,
-    types::{NearToken},
+    result::{ExecutionFailure, ExecutionSuccess},
+    types::NearToken,
     Account, Contract,
 };
+
+use crate::parse_result::ParseResult;
 
 pub struct ContractCall<T> {
     method: String,
@@ -37,6 +37,11 @@ impl<T> ContractCall<T> {
 }
 
 impl<T> ContractCall<T> {
+    pub fn with_user(mut self, account: Account) -> Self {
+        self.user_account = account.into();
+        self
+    }
+
     pub fn args(mut self, args: Vec<u8>) -> Self {
         self.args = args;
         self
@@ -59,7 +64,7 @@ impl<T> ContractCall<T> {
 }
 
 impl<T: DeserializeOwned> ContractCall<T> {
-    pub async fn call(self) -> Result<T> {
+    async fn prepare_transaction(&self) -> CallTransaction {
         let method = self.method.clone();
 
         let transaction = if let Some(user_account) = self.user_account.clone() {
@@ -69,31 +74,33 @@ impl<T: DeserializeOwned> ContractCall<T> {
             self.contract.call(&method)
         };
 
-        let transaction = transaction.args(self.args.clone()).max_gas().deposit(self.deposit);
+        transaction.args(self.args.clone()).max_gas().deposit(self.deposit)
+    }
 
-        invoke_transaction(&self.method, transaction).await
+    async fn call_transaction(&self) -> Result<ExecutionSuccess, ExecutionFailure> {
+        println!("▶️ {}", self.method);
+        let transaction = self.prepare_transaction().await;
+        let result = transaction.transact().await.unwrap().into_result();
+        log_result(result)
+    }
+
+    pub async fn call(self) -> Result<T> {
+        self.call_transaction().await.parse()
+    }
+
+    pub async fn result(self) -> Result<ExecutionSuccess, ExecutionFailure> {
+        self.call_transaction().await
     }
 }
 
-async fn invoke_transaction<T: DeserializeOwned>(method: &str, tx: CallTransaction) -> Result<T> {
-    let result = tx.transact().await;
+fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<ExecutionSuccess, ExecutionFailure> {
+    println!("  📬 Result: {result:?}");
 
-    println!("Result: {result:#?}");
-
-    let result = result?.into_result()?;
-
-    let result = if size_of::<T>() == 0 {
-        // For cases when return type is `()` and we don't need to parse result.
-        // This call is safe for zero sized types.
-        #[allow(clippy::uninit_assumed_init)]
-        unsafe {
-            MaybeUninit::uninit().assume_init()
+    if let Ok(ref result) = result {
+        for log in result.logs() {
+            println!("  📖 {log}");
         }
-    } else {
-        result.json()?
-    };
+    }
 
-    println!("✅ {method}: OK");
-
-    Ok(result)
+    result
 }

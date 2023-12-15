@@ -57,6 +57,8 @@ impl ContractApi for Contract {
     }
 
     fn test(&mut self) -> u32 {
+        env::log_str("calling test");
+        env::log_str("will return 555");
         555
     }
 
