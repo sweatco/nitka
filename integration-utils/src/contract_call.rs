@@ -37,8 +37,8 @@ impl<T> ContractCall<T> {
 }
 
 impl<T> ContractCall<T> {
-    pub fn with_user(mut self, account: Account) -> Self {
-        self.user_account = account.into();
+    pub fn with_user(mut self, account: &Account) -> Self {
+        self.user_account = account.clone().into();
         self
     }
 
