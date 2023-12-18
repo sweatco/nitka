@@ -1,12 +1,11 @@
 use integration_utils::{contract_call::ContractCall, integration_contract::IntegrationContract};
 use model::api::ContractApiIntegration;
-use near_workspaces::{Account, Contract};
+use near_workspaces::Contract;
 
 pub const MY_CONTRACT: &str = "my_contract";
 
 pub struct MyContract<'a> {
     contract: &'a Contract,
-    account: Option<Account>,
 }
 
 impl ContractApiIntegration for MyContract<'_> {
@@ -29,19 +28,7 @@ impl ContractApiIntegration for MyContract<'_> {
 
 impl<'a> IntegrationContract<'a> for MyContract<'a> {
     fn with_contract(contract: &'a Contract) -> Self {
-        Self {
-            contract,
-            account: None,
-        }
-    }
-
-    fn with_user(&mut self, account: &Account) -> &mut Self {
-        self.account = account.clone().into();
-        self
-    }
-
-    fn user_account(&self) -> Option<Account> {
-        self.account.clone()
+        Self { contract }
     }
 
     fn contract(&self) -> &'a Contract {
