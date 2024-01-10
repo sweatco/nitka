@@ -3,28 +3,32 @@ use std::{
     sync::Mutex,
 };
 
-use anyhow::bail;
+use anyhow::{bail, Result};
 
 static CONTRACT_READY: Mutex<bool> = Mutex::new(false);
 
-/// Compile contract in release mode and prepare it for integration tests usage
-pub fn build_contract(make_command: Option<&str>) -> anyhow::Result<()> {
-    let mut ready = CONTRACT_READY.lock().unwrap();
-
-    if *ready {
-        return Ok(());
-    }
-
-    // Assuming that the Makefile is in root repository directory
+pub fn git_root() -> Result<String> {
     let output = Command::new("git").args(["rev-parse", "--show-toplevel"]).output()?;
     assert!(output.status.success(), "Failed to get Git repository root path");
     let git_root = String::from_utf8_lossy(&output.stdout)
         .trim_end_matches('\n')
         .to_string();
 
+    Ok(git_root)
+}
+
+/// Compile contract in release mode and prepare it for integration tests usage
+pub fn build_contract(make_command: Option<&str>) -> Result<()> {
+    let mut ready = CONTRACT_READY.lock().unwrap();
+
+    if *ready {
+        return Ok(());
+    }
+
     let output = Command::new("make")
         .arg(make_command.unwrap_or("build"))
-        .current_dir(git_root)
+        // Assuming that the Makefile is in root repository directory
+        .current_dir(git_root()?)
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .output()?;
@@ -41,7 +45,6 @@ pub fn build_contract(make_command: Option<&str>) -> anyhow::Result<()> {
 #[cfg(test)]
 mod test {
     use std::thread::spawn;
-
 
     use crate::build::build_contract;
 

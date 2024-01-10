@@ -1,0 +1,19 @@
+[package]
+name = "sandbox"
+version = "1.0.0"
+publish = false
+edition = "2021"
+
+[lib]
+name = "sandbox"
+
+[dependencies]
+tokio = { workspace = true }
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+
+near-sdk = { workspace = true }
+near-workspaces = { workspace= true }
+
+integration-trait = { workspace = true }
+integration-utils = { workspace = true }
