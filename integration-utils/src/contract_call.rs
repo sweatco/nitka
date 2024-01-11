@@ -64,7 +64,7 @@ impl<T> ContractCall<T> {
 }
 
 impl<T: DeserializeOwned> ContractCall<T> {
-    async fn prepare_transaction(&self) -> CallTransaction {
+    fn prepare_transaction(&self) -> CallTransaction {
         let method = self.method.clone();
 
         let transaction = if let Some(user_account) = self.user_account.clone() {
@@ -79,7 +79,7 @@ impl<T: DeserializeOwned> ContractCall<T> {
 
     async fn call_transaction(&self) -> Result<ExecutionSuccess, ExecutionFailure> {
         println!("▶️ {}", self.method);
-        let transaction = self.prepare_transaction().await;
+        let transaction = self.prepare_transaction();
         let result = transaction.transact().await.unwrap().into_result();
         log_result(result)
     }
@@ -93,6 +93,7 @@ impl<T: DeserializeOwned> ContractCall<T> {
     }
 }
 
+#[allow(clippy::result_large_err)]
 fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<ExecutionSuccess, ExecutionFailure> {
     println!("  📬 Result: {result:?}");
 

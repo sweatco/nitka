@@ -7,6 +7,10 @@ edition = "2021"
 [lib]
 name = "model"
 
+[features]
+default = []
+integration-test = []
+
 [dependencies]
 anyhow = { workspace = true }
 near-sdk = { workspace = true }

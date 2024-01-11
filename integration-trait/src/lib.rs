@@ -11,7 +11,7 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
 
     let trait_name = &input.ident;
 
-    let async_trait_name = Ident::new(&format!("{trait_name}Integration"), trait_name.span());
+    let integration_trait_name = Ident::new(&format!("{trait_name}Integration"), trait_name.span());
 
     let async_methods: Vec<_> = input
         .items
@@ -30,8 +30,8 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
 
         #input
 
-        #[cfg(not(target_arch = "wasm32"))]
-        pub trait #async_trait_name {
+        #[cfg(feature = "integration-test")]
+        pub trait #integration_trait_name {
             #(#async_methods)*
         }
     }

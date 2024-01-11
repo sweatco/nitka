@@ -1,4 +1,4 @@
-#![cfg(not(target_arch = "wasm32"))]
+#![cfg(feature = "integration-test")]
 
 use integration_utils::{contract_call::ContractCall, integration_contract::IntegrationContract, misc::ToNear};
 use near_sdk::{AccountId, Timestamp};

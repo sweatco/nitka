@@ -6,6 +6,9 @@ edition = "2021"
 
 [lib]
 
+[features]
+default = ["integration-test"]
+integration-test = []
 
 [dependencies]
 anyhow = "1.0.75"

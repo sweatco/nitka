@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use anyhow::Result;
 use near_workspaces::Account;
 
