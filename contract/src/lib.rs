@@ -66,6 +66,10 @@ impl ContractApi for Contract {
         self.some_data.clone()
     }
 
+    fn set_data(&mut self, data: Vec<String>) {
+        self.some_data = data;
+    }
+
     fn log_and_panic(&mut self) {
         env::log_str("Hello!");
         env::log_str("Panic!");

@@ -11,6 +11,7 @@ use crate::api::HelperApi;
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
+    /// Some data
     data: String,
 }
 
@@ -24,7 +25,7 @@ impl HelperApi for Contract {
         }
     }
 
-    fn block_timestamp_ms(&self) -> Timestamp {
+    fn block_timestamp_ms(&self, _some_value: String) -> Timestamp {
         env::block_timestamp_ms()
     }
 }

@@ -1,4 +1,7 @@
-use std::process::{Command, Stdio};
+use std::{
+    fs::copy,
+    process::{Command, Stdio},
+};
 
 use anyhow::{bail, Result};
 use integration_utils::{build::git_root, misc::load_wasm};
@@ -59,5 +62,9 @@ pub fn build_with_version(version: &str) -> Result<Vec<u8>> {
         git_root()?
     );
 
-    Ok(load_wasm(&contract_path))
+    let final_contract_path = format!("{}/temp/helper_contract_{version}.wasm", git_root()?);
+
+    copy(contract_path, &final_contract_path)?;
+
+    Ok(load_wasm(&final_contract_path))
 }
