@@ -1,3 +1,7 @@
+use std::ops::Sub;
+
+use near_workspaces::types::Gas;
+
 pub fn generate_permutations<One, Two>(one: &[One], two: &[Two]) -> Vec<(One, Two)>
 where
     One: Copy,
@@ -22,9 +26,35 @@ where
         .collect()
 }
 
+pub fn values_diff<T, V>(values: T) -> Vec<V>
+where
+    V: Sub<Output = V> + Copy,
+    T: IntoIterator<Item = V>,
+{
+    let vec: Vec<_> = values.into_iter().collect();
+    vec.windows(2).map(|w| w[1] - w[0]).collect()
+}
+
+pub fn pretty_gas_string(gas: Gas) -> String {
+    format!(
+        "{} T {} G total: {}",
+        gas.as_tgas(),
+        strip_tgas(gas).as_ggas(),
+        gas.as_gas()
+    )
+}
+
+fn strip_tgas(gas: Gas) -> Gas {
+    Gas::from_ggas(gas.as_ggas() - gas.as_tgas() * 1000)
+}
+
 #[cfg(test)]
 mod test {
-    use crate::measure::utils::{generate_permutations, generate_permutations_3};
+    use near_workspaces::types::Gas;
+
+    use crate::measure::utils::{
+        generate_permutations, generate_permutations_3, pretty_gas_string, strip_tgas, values_diff,
+    };
 
     #[test]
     fn permutations() -> anyhow::Result<()> {
@@ -48,5 +78,23 @@ mod test {
         );
 
         Ok(())
+    }
+
+    #[test]
+    fn pretty_gas_string_test() {
+        assert_eq!(
+            pretty_gas_string(Gas::from_ggas(5555)),
+            "5 T 555 G total: 5555000000000"
+        );
+    }
+
+    #[test]
+    fn values_diff_test() {
+        assert_eq!(values_diff([1, 2, 6, 50]), [1, 4, 44]);
+    }
+
+    #[test]
+    fn strip_tgas_test() {
+        assert_eq!(strip_tgas(Gas::from_ggas(5555)), Gas::from_ggas(555));
     }
 }
