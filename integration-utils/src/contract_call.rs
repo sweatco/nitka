@@ -12,7 +12,7 @@ use near_workspaces::{
     Account, Contract,
 };
 
-use crate::parse_result::ParseResult;
+use crate::{measure::outcome_storage::OutcomeStorage, parse_result::ParseResult};
 
 pub struct ContractCall<T> {
     method: String,
@@ -81,6 +81,9 @@ impl<T: DeserializeOwned> ContractCall<T> {
         println!("▶️ {}", self.method);
         let transaction = self.prepare_transaction();
         let result = transaction.transact().await.unwrap().into_result();
+        if let Ok(success) = &result {
+            OutcomeStorage::add_result(success);
+        }
         log_result(result)
     }
 
