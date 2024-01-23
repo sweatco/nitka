@@ -1,7 +1,7 @@
 #![cfg(feature = "integration-test")]
 
 use integration_utils::{contract_call::ContractCall, integration_contract::IntegrationContract, misc::ToNear};
-use near_sdk::{AccountId, Timestamp};
+use near_sdk::{serde_json::json, AccountId, Timestamp};
 use near_workspaces::Contract;
 
 use crate::api::HelperApiIntegration;
@@ -23,8 +23,10 @@ impl HelperApiIntegration for HelperContract<'_> {
         self.make_call("new")
     }
 
-    fn block_timestamp_ms(&self) -> ContractCall<Timestamp> {
+    fn block_timestamp_ms(&self, some_value: String) -> ContractCall<Timestamp> {
         self.make_call("block_timestamp_ms")
+            .args_json(json!({ "some_value": some_value }))
+            .unwrap()
     }
 }
 

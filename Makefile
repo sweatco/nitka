@@ -11,6 +11,9 @@ build-integration: ##@Build Build the contract for integration tests.
 helper: ##@Build Build the helper contract.
 	./scripts/build-helper.sh
 
+abi: ##@Build Generate ABI for test contract.
+	./scripts/generate-abi.sh
+
 fmt: ##@Chores Format the code using rustfmt nightly.
 	cargo +nightly fmt --all
 

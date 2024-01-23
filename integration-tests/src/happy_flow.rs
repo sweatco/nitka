@@ -27,7 +27,7 @@ async fn happy_flow() -> anyhow::Result<()> {
 
     assert_eq!(vec!["a".to_string()], data);
 
-    dbg!(context.helper().block_timestamp_ms().call().await?);
+    dbg!(context.helper().block_timestamp_ms("Hello".to_string()).call().await?);
 
     Ok(())
 }

@@ -1,5 +1,6 @@
 use integration_utils::{contract_call::ContractCall, integration_contract::IntegrationContract};
 use model::api::ContractApiIntegration;
+use near_sdk::serde_json::json;
 use near_workspaces::Contract;
 
 pub const MY_CONTRACT: &str = "my_contract";
@@ -19,6 +20,10 @@ impl ContractApiIntegration for MyContract<'_> {
 
     fn data(&mut self) -> ContractCall<Vec<String>> {
         self.make_call("data")
+    }
+
+    fn set_data(&mut self, data: Vec<String>) -> ContractCall<()> {
+        self.make_call("set_data").args_json(json!({ "data": data })).unwrap()
     }
 
     fn log_and_panic(&mut self) -> ContractCall<()> {
