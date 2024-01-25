@@ -25,7 +25,8 @@ impl HelperApi for Contract {
         }
     }
 
-    fn block_timestamp_ms(&self, _some_value: String) -> Timestamp {
+    fn block_timestamp_ms(&self, some_value: String) -> Timestamp {
+        dbg!(some_value);
         env::block_timestamp_ms()
     }
 }

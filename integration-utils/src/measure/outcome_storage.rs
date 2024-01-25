@@ -1,7 +1,6 @@
 use std::{
     collections::BTreeMap,
     future::Future,
-    mem::transmute,
     sync::{Mutex, MutexGuard},
 };
 
@@ -80,7 +79,7 @@ impl OutcomeStorage {
             return;
         }
 
-        let existing = Self::get_data().insert(execution.to_string(), clone_execution_success(result));
+        let existing = Self::get_data().insert(execution.to_string(), result.clone());
         assert!(existing.is_none());
     }
 
@@ -88,7 +87,7 @@ impl OutcomeStorage {
         let data = Self::get_data();
 
         let Some(success) = data.get(account.id().as_str()) else {
-            let accs: Vec<_> = data.keys().into_iter().collect();
+            let accs: Vec<_> = data.keys().collect();
 
             panic!("Failed to get account data for: {account:?}. Existing accounts: {accs:?}");
         };
@@ -107,27 +106,4 @@ impl OutcomeStorage {
             .expect("find(|outcome| outcome.logs.iter().any(|log| log.contains(label)))")
             .clone()
     }
-}
-
-/// A crutch to clone unclonable `Value`
-/// Remove this after: https://github.com/near/near-workspaces-rs/pull/345 landed
-fn clone_execution_success(success: &ExecutionSuccess) -> ExecutionSuccess {
-    #[derive(Clone)]
-    struct ExecutionDetails {
-        _transaction: ExecutionOutcome,
-        _receipts: Vec<ExecutionOutcome>,
-    }
-
-    #[derive(Clone)]
-    struct ClonableExecutionSuccess {
-        _total_gas_burnt: Gas,
-        _value: String,
-        _details: ExecutionDetails,
-    }
-
-    let clonable: &ClonableExecutionSuccess = unsafe { transmute(success) };
-
-    let clone = clonable.clone();
-
-    unsafe { transmute(clone) }
 }

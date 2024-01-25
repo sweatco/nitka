@@ -25,6 +25,7 @@ helper-contract = { path = "helper-contract" }
 
 model = { path = "model" }
 
-near-workspaces = "0.9.0"
-near-sdk = "4.1.1"
-near-contract-standards = "4.1.1"
+near-workspaces = "0.10.0"
+
+near-sdk = { git = "https://github.com/sweatco/near-sdk-rs", rev = "8c48b26cc48d969c1e5f3162141fe9c824fccecd" }
+near-contract-standards = { git = "https://github.com/sweatco/near-sdk-rs", rev = "8c48b26cc48d969c1e5f3162141fe9c824fccecd" }
