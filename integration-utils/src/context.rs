@@ -19,14 +19,34 @@ pub struct Context<T> {
 }
 
 impl Context<Sandbox> {
-    pub async fn new(contracts: &[&'static str], make_commend: Option<&str>) -> anyhow::Result<Self> {
-        Self::with_worker(contracts, near_workspaces::sandbox().await?, make_commend).await
+    pub async fn new(
+        contracts: &[&'static str],
+        rebuild_contract: bool,
+        make_command: Option<&str>,
+    ) -> anyhow::Result<Self> {
+        Self::with_worker(
+            contracts,
+            near_workspaces::sandbox().await?,
+            rebuild_contract,
+            make_command,
+        )
+        .await
     }
 }
 
 impl Context<Testnet> {
-    pub async fn new(contracts: &[&'static str], make_commend: Option<&str>) -> anyhow::Result<Self> {
-        Self::with_worker(contracts, near_workspaces::testnet().await?, make_commend).await
+    pub async fn new(
+        contracts: &[&'static str],
+        rebuild_contract: bool,
+        make_command: Option<&str>,
+    ) -> anyhow::Result<Self> {
+        Self::with_worker(
+            contracts,
+            near_workspaces::testnet().await?,
+            rebuild_contract,
+            make_command,
+        )
+        .await
     }
 }
 
@@ -34,11 +54,14 @@ impl<T: DevNetwork + TopLevelAccountCreator + 'static> Context<T> {
     async fn with_worker(
         contract_names: &[&'static str],
         worker: Worker<T>,
+        rebuild_contract: bool,
         make_command: Option<&str>,
     ) -> anyhow::Result<Self> {
         println!("🏭 Initializing context");
 
-        build_contract(make_command)?;
+        if rebuild_contract {
+            build_contract(make_command)?;
+        }
 
         let root_account = worker.dev_create_account().await?;
 
