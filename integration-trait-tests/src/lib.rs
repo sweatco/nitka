@@ -1,6 +1,28 @@
 use integration_trait::make_integration_version;
-use integration_utils::contract_call::ContractCall;
 use near_sdk::{json_types::U128, PromiseOrValue};
+
+use crate::integration_contract::IntegrationTraitTestContract;
+
+pub mod integration_contract {
+    use integration_utils::integration_contract::IntegrationContract;
+    use near_workspaces::Contract;
+
+    pub const MY_CONTRACT: &str = "my_contract";
+
+    pub struct IntegrationTraitTestContract<'a> {
+        pub(crate) contract: &'a Contract,
+    }
+
+    impl<'a> IntegrationContract<'a> for IntegrationTraitTestContract<'a> {
+        fn with_contract(contract: &'a Contract) -> Self {
+            Self { contract }
+        }
+
+        fn contract(&self) -> &'a Contract {
+            self.contract
+        }
+    }
+}
 
 #[make_integration_version]
 pub trait ContractNameInterface {
@@ -16,50 +38,4 @@ pub trait ContractNameInterface {
 
     #[update]
     fn update_contract(&mut self);
-}
-
-impl ContractNameInterface for () {
-    fn init() -> Self {}
-
-    fn initialize_with_name(_name: String) -> Self {}
-
-    fn receive_name(&self) -> String {
-        String::default()
-    }
-
-    fn set_name(&mut self, _name: String) {}
-
-    fn burn(&mut self) -> PromiseOrValue<U128> {
-        todo!()
-    }
-
-    fn update_contract(&mut self) {
-        todo!()
-    }
-}
-
-impl ContractNameInterfaceIntegration for () {
-    fn init(&self) -> ContractCall<()> {
-        todo!()
-    }
-
-    fn initialize_with_name(&self, _name: String) -> ContractCall<()> {
-        todo!()
-    }
-
-    fn receive_name(&self) -> ContractCall<String> {
-        todo!()
-    }
-
-    fn set_name(&mut self, _name: String) -> ContractCall<()> {
-        todo!()
-    }
-
-    fn burn(&mut self) -> ContractCall<U128> {
-        todo!()
-    }
-
-    fn update_contract(&mut self, _code: Vec<u8>) -> ContractCall<()> {
-        todo!()
-    }
 }

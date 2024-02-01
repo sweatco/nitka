@@ -23,8 +23,9 @@ ed25519-dalek = { workspace = true }
 base64 = { workspace = true }
 mutants = { workspace = true }
 
-model = { workspace = true, features = ["integration-test"] }
 integration-utils = { workspace = true }
 near-workspaces = { workspace = true }
-helper-contract = { workspace = true, features = ["integration-test"] }
+
+my-model = { workspace = true, features = ["integration-test"] }
+helper-model = { workspace = true, features = ["integration-test"] }
 

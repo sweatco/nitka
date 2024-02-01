@@ -1,15 +1,10 @@
 #![cfg(test)]
 
 use async_trait::async_trait;
-use helper_contract::{
-    api::HelperApiIntegration,
-    interface::{HelperContract, HELPER_CONTRACT},
-};
+use helper_model::api::{HelperApiIntegration, HelperContract, HELPER_CONTRACT};
 use integration_utils::integration_contract::IntegrationContract;
-use model::api::ContractApiIntegration;
+use my_model::api::{ContractApiIntegration, MyContract, MY_CONTRACT};
 use near_workspaces::Account;
-
-use crate::contract_interface::{MyContract, MY_CONTRACT};
 
 pub type Context = integration_utils::context::Context<near_workspaces::network::Sandbox>;
 

@@ -1,5 +1,5 @@
 [package]
-name = "helper-contract"
+name = "helper-model"
 version = "1.0.0"
 authors = ["Sweat Economy"]
 edition = "2021"

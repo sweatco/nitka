@@ -1,15 +1,15 @@
 [package]
-name = "model"
+name = "my-model"
 version = "1.0.0"
 publish = false
 edition = "2021"
 
 [lib]
-name = "model"
+name = "my_model"
 
 [features]
 default = []
-integration-test = []
+integration-test = ["dep:integration-utils", "dep:near-workspaces"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -17,6 +17,5 @@ near-sdk = { workspace = true }
 async-trait = { workspace = true }
 integration-trait = { workspace = true }
 
-
-[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-integration-utils = { workspace = true }
+integration-utils = { workspace = true, optional = true }
+near-workspaces = { workspace = true, optional = true }

@@ -1,5 +1,5 @@
 [package]
-name = "integration-trait-tests"
+name = "integration-trait-test-model"
 version = "1.0.0"
 authors = ["Sweat Economy"]
 edition = "2021"
@@ -14,5 +14,6 @@ integration-test = []
 anyhow = "1.0.75"
 near-sdk = "4.1.1"
 async-trait = "0.1.74"
+near-workspaces = { workspace = true }
 integration-utils = { workspace = true }
 integration-trait = { workspace = true }

@@ -1,6 +1,6 @@
 use std::{collections::HashSet, str::FromStr};
 
-use model::api::ContractApi;
+use my_model::api::ContractApi;
 use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},
     collections::{LookupMap, UnorderedMap, UnorderedSet, Vector},

@@ -21,9 +21,9 @@ tokio = "1.28.2"
 
 integration-trait = { path = "integration-trait" }
 integration-utils = { path = "integration-utils" }
-helper-contract = { path = "helper-contract" }
+helper-model = { path = "helper-contract" }
 
-model = { path = "model" }
+my-model = { path = "model" }
 
 near-workspaces = "0.10.0"
 

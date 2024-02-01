@@ -1,5 +1,4 @@
 pub mod api;
-pub mod interface;
 
 use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},

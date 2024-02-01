@@ -1,8 +1,8 @@
 #![cfg(test)]
 
-use helper_contract::api::HelperApiIntegration;
+use helper_model::api::HelperApiIntegration;
 use integration_utils::{panic_finder::PanicFinder, parse_result::ParseResult};
-use model::api::ContractApiIntegration;
+use my_model::api::ContractApiIntegration;
 
 use crate::context::{prepare_contract, IntegrationContext};
 
