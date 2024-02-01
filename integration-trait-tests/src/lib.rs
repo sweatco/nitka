@@ -1,27 +1,9 @@
 use integration_trait::make_integration_version;
 use near_sdk::{json_types::U128, PromiseOrValue};
+use near_workspaces::Contract;
 
-use crate::integration_contract::IntegrationTraitTestContract;
-
-pub mod integration_contract {
-    use integration_utils::integration_contract::IntegrationContract;
-    use near_workspaces::Contract;
-
-    pub const MY_CONTRACT: &str = "my_contract";
-
-    pub struct IntegrationTraitTestContract<'a> {
-        pub(crate) contract: &'a Contract,
-    }
-
-    impl<'a> IntegrationContract<'a> for IntegrationTraitTestContract<'a> {
-        fn with_contract(contract: &'a Contract) -> Self {
-            Self { contract }
-        }
-
-        fn contract(&self) -> &'a Contract {
-            self.contract
-        }
-    }
+pub struct IntegrationTraitTestContract<'a> {
+    pub contract: &'a Contract,
 }
 
 #[make_integration_version]

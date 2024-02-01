@@ -104,8 +104,7 @@ fn convert_method_to_implementation(trait_method: &TraitItemFn) -> ItemFn {
 
     let result: ItemFn = parse_quote!(
         fn #fn_name(#fn_args) #fn_ret {
-            use integration_utils::integration_contract::IntegrationContract;
-            self.make_call(#fn_name_str) #call_args
+            integration_utils::integration_contract::make_call(self.contract, #fn_name_str) #call_args
         }
     );
 

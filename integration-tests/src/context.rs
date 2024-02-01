@@ -1,12 +1,14 @@
 #![cfg(test)]
 
 use async_trait::async_trait;
-use helper_model::api::{HelperApiIntegration, HelperContract, HELPER_CONTRACT};
-use integration_utils::integration_contract::IntegrationContract;
-use my_model::api::{ContractApiIntegration, MyContract, MY_CONTRACT};
+use helper_model::api::{HelperApiIntegration, HelperContract};
+use my_model::api::{ContractApiIntegration, MyContract};
 use near_workspaces::Account;
 
 pub type Context = integration_utils::context::Context<near_workspaces::network::Sandbox>;
+
+pub const HELPER_CONTRACT: &str = "helper_contract";
+pub const MY_CONTRACT: &str = "my_contract";
 
 #[async_trait]
 pub trait IntegrationContext {
@@ -32,11 +34,15 @@ impl IntegrationContext for Context {
     }
 
     fn my_contract(&self) -> MyContract {
-        MyContract::with_contract(&self.contracts[MY_CONTRACT])
+        MyContract {
+            contract: &self.contracts[MY_CONTRACT],
+        }
     }
 
     fn helper(&self) -> HelperContract {
-        HelperContract::with_contract(&self.contracts[HELPER_CONTRACT])
+        HelperContract {
+            contract: &self.contracts[HELPER_CONTRACT],
+        }
     }
 }
 
