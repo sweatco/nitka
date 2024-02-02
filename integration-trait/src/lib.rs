@@ -29,7 +29,7 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
 
     let integration_trait_name = Ident::new(&format!("{trait_name}Integration"), trait_name.span());
 
-    let integration_trait_methods: Vec<TraitItemFn> = input
+    let mut integration_trait_methods: Vec<TraitItemFn> = input
         .items
         .iter_mut()
         .filter_map(|item| {
@@ -43,7 +43,7 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
         .collect();
 
     let implementation_methods: Vec<ItemFn> = integration_trait_methods
-        .iter()
+        .iter_mut()
         .map(convert_method_to_implementation)
         .collect();
 
@@ -64,7 +64,7 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
     .into()
 }
 
-fn convert_method_to_implementation(trait_method: &TraitItemFn) -> ItemFn {
+fn convert_method_to_implementation(trait_method: &mut TraitItemFn) -> ItemFn {
     let fn_name = trait_method.sig.ident.clone();
     let fn_args = trait_method.sig.inputs.clone();
     let fn_ret = trait_method.sig.output.clone();
@@ -102,9 +102,24 @@ fn convert_method_to_implementation(trait_method: &TraitItemFn) -> ItemFn {
         quote!()
     };
 
+    let deposit = if let Some(attr) = trait_method.attrs.first() {
+        let attr = attr.path().to_token_stream().to_string();
+
+        trait_method.attrs = vec![];
+
+        match attr.as_str() {
+            "deposit_one_yocto" => quote! {
+                .deposit(near_workspaces::types::NearToken::from_yoctonear(1))
+            },
+            _ => quote!(),
+        }
+    } else {
+        quote!()
+    };
+
     let result: ItemFn = parse_quote!(
         fn #fn_name(#fn_args) #fn_ret {
-            integration_utils::integration_contract::make_call(self.contract, #fn_name_str) #call_args
+            integration_utils::integration_contract::make_call(self.contract, #fn_name_str) #deposit #call_args
         }
     );
 
@@ -144,13 +159,9 @@ fn convert_method_to_integration_trait(trait_method: &mut TraitItemFn) -> TraitI
 
     if let Some(attr) = method.attrs.first() {
         let attr = attr.path().to_token_stream().to_string();
-        method.attrs = vec![];
         trait_method.attrs = vec![];
-
-        match attr.as_str() {
-            "update" => method.sig.inputs.push(parse_str("code: Vec<u8>").unwrap()),
-            "doc" => (),
-            _ => unreachable!("Invalid attribute: '{attr}'. Only 'update' is supported."),
+        if attr.as_str() == "update" {
+            method.sig.inputs.push(parse_str("code: Vec<u8>").unwrap());
         }
     }
 

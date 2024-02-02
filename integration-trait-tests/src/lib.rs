@@ -12,6 +12,8 @@ pub trait ContractNameInterface {
     fn initialize_with_name(name: String) -> Self;
 
     fn receive_name(&self) -> String;
+
+    #[deposit_one_yocto]
     fn set_name(&mut self, name: String);
 
     /// Initialize multisig contract.
