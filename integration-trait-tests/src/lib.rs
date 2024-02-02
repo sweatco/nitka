@@ -11,9 +11,10 @@ pub trait ContractNameInterface {
     fn init() -> Self;
     fn initialize_with_name(name: String) -> Self;
 
+    #[deposit_one_yocto]
     fn receive_name(&self) -> String;
 
-    #[deposit_one_yocto]
+    #[deposit_yocto = method_for_deposit()]
     fn set_name(&mut self, name: String);
 
     /// Initialize multisig contract.
@@ -22,4 +23,8 @@ pub trait ContractNameInterface {
 
     #[update]
     fn update_contract(&mut self);
+}
+
+fn method_for_deposit() -> u128 {
+    50
 }

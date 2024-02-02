@@ -105,17 +105,32 @@ fn convert_method_to_implementation(trait_method: &mut TraitItemFn) -> ItemFn {
     let deposit = if let Some(attr) = trait_method.attrs.first() {
         let attr = attr.path().to_token_stream().to_string();
 
-        trait_method.attrs = vec![];
-
         match attr.as_str() {
             "deposit_one_yocto" => quote! {
                 .deposit(near_workspaces::types::NearToken::from_yoctonear(1))
             },
+            "deposit_yocto" => {
+                let mut attr = trait_method.attrs.first().unwrap().to_token_stream().to_string();
+
+                attr.pop().unwrap();
+
+                let index = attr.find("= ").unwrap() + 2;
+
+                let attr = &attr[index..];
+
+                let deposit_value = TokenStream2::from_str(attr).unwrap();
+
+                quote! {
+                    .deposit(near_workspaces::types::NearToken::from_yoctonear(#deposit_value))
+                }
+            }
             _ => quote!(),
         }
     } else {
         quote!()
     };
+
+    trait_method.attrs = vec![];
 
     let result: ItemFn = parse_quote!(
         fn #fn_name(#fn_args) #fn_ret {
