@@ -13,7 +13,7 @@ async fn happy_flow() -> anyhow::Result<()> {
 
     let context = prepare_contract().await?;
 
-    assert_eq!(555, context.my_contract().test().call().await?);
+    assert_eq!(555, context.my_contract().test().await?);
 
     let result = context.my_contract().test().result().await;
 
@@ -23,11 +23,11 @@ async fn happy_flow() -> anyhow::Result<()> {
 
     assert_eq!(555, value);
 
-    let data = context.my_contract().data().call().await?;
+    let data = context.my_contract().data().await?;
 
     assert_eq!(vec!["a".to_string()], data);
 
-    dbg!(context.helper().block_timestamp_ms("Hello".to_string()).call().await?);
+    dbg!(context.helper().block_timestamp_ms("Hello".to_string()).await?);
 
     Ok(())
 }

@@ -1,4 +1,8 @@
-use std::marker::PhantomData;
+use std::{
+    future::{Future, IntoFuture},
+    marker::PhantomData,
+    pin::Pin,
+};
 
 use anyhow::Result;
 use near_sdk::{
@@ -63,7 +67,7 @@ impl<T> ContractCall<T> {
     }
 }
 
-impl<T: DeserializeOwned> ContractCall<T> {
+impl<T: Send + DeserializeOwned> ContractCall<T> {
     fn prepare_transaction(&self) -> CallTransaction {
         let method = self.method.clone();
 
@@ -87,12 +91,21 @@ impl<T: DeserializeOwned> ContractCall<T> {
         log_result(result)
     }
 
-    pub async fn call(self) -> Result<T> {
+    async fn call(self) -> Result<T> {
         self.call_transaction().await.parse()
     }
 
     pub async fn result(self) -> Result<ExecutionSuccess, ExecutionFailure> {
         self.call_transaction().await
+    }
+}
+
+impl<T: Send + Sync + DeserializeOwned + 'static> IntoFuture for ContractCall<T> {
+    type Output = Result<T>;
+    type IntoFuture = Pin<Box<dyn Future<Output = Self::Output> + Send>>;
+
+    fn into_future(self) -> Self::IntoFuture {
+        Box::pin(async move { self.call().await })
     }
 }
 
