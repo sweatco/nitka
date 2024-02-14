@@ -2,6 +2,7 @@ use std::{
     future::{Future, IntoFuture},
     marker::PhantomData,
     pin::Pin,
+    sync::atomic::{AtomicBool, Ordering},
 };
 
 use anyhow::Result;
@@ -15,6 +16,8 @@ use near_workspaces::{
     types::NearToken,
     Account, Contract,
 };
+
+static LOGS_ENABLED: AtomicBool = AtomicBool::new(true);
 
 use crate::{measure::outcome_storage::OutcomeStorage, parse_result::ParseResult};
 
@@ -109,13 +112,30 @@ impl<T: Send + Sync + DeserializeOwned + 'static> IntoFuture for ContractCall<T>
     }
 }
 
+pub fn set_integration_logs_enabled(enabled: bool) {
+    LOGS_ENABLED.store(enabled, Ordering::Relaxed);
+}
+
 #[allow(clippy::result_large_err)]
 fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<ExecutionSuccess, ExecutionFailure> {
-    println!("  📬 Result: {result:?}");
+    match result {
+        Ok(ref result) => {
+            if LOGS_ENABLED.load(Ordering::Relaxed) {
+                for log in result.logs() {
+                    println!("  📖 {log}");
+                }
+            }
 
-    if let Ok(ref result) = result {
-        for log in result.logs() {
-            println!("  📖 {log}");
+            println!("  ⛽ {} TGas burned", result.total_gas_burnt.as_tgas());
+        }
+        Err(ref error) => {
+            if LOGS_ENABLED.load(Ordering::Relaxed) {
+                for log in error.logs() {
+                    println!("  📖 {log}");
+                }
+            }
+
+            println!("  ⛽ {} TGas burned", error.total_gas_burnt.as_tgas());
         }
     }
 
