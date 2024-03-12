@@ -18,6 +18,7 @@ use near_workspaces::{
 };
 
 static LOGS_ENABLED: AtomicBool = AtomicBool::new(true);
+static FULL_OUTPUT_ENABLED: AtomicBool = AtomicBool::new(false);
 
 use crate::{measure::outcome_storage::OutcomeStorage, parse_result::ParseResult};
 
@@ -116,6 +117,10 @@ pub fn set_integration_logs_enabled(enabled: bool) {
     LOGS_ENABLED.store(enabled, Ordering::Relaxed);
 }
 
+pub fn set_integration_full_output(enabled: bool) {
+    FULL_OUTPUT_ENABLED.store(enabled, Ordering::Relaxed);
+}
+
 #[allow(clippy::result_large_err)]
 fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<ExecutionSuccess, ExecutionFailure> {
     match result {
@@ -137,6 +142,10 @@ fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<Exec
 
             println!("  ⛽ {} TGas burned", error.total_gas_burnt.as_tgas());
         }
+    }
+
+    if FULL_OUTPUT_ENABLED.load(Ordering::Relaxed) {
+        println!("  🛠️ result: \n{result:#?}");
     }
 
     result

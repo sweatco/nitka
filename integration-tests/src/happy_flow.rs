@@ -2,6 +2,7 @@
 
 use helper_model::api::HelperApiIntegration;
 use integration_utils::{panic_finder::PanicFinder, parse_result::ParseResult};
+use integration_utils::contract_call::set_integration_full_output;
 use my_model::api::ContractApiIntegration;
 
 use crate::context::{prepare_contract, IntegrationContext};
@@ -9,6 +10,8 @@ use crate::context::{prepare_contract, IntegrationContext};
 #[tokio::test]
 #[mutants::skip]
 async fn happy_flow() -> anyhow::Result<()> {
+    set_integration_full_output(true);
+
     println!("👷🏽 Run happy flow test");
 
     let context = prepare_contract().await?;
