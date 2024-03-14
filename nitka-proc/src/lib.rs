@@ -51,12 +51,12 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
 
         #input
 
-        #[cfg(feature = "integration-test")]
+        #[cfg(feature = "integration-api")]
         pub trait #integration_trait_name {
             #(#integration_trait_methods)*
         }
 
-        #[cfg(feature = "integration-test")]
+        #[cfg(feature = "integration-api")]
         impl #integration_trait_name for #contract<'_> {
             #(#implementation_methods)*
         }

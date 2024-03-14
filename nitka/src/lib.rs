@@ -7,3 +7,5 @@ pub mod misc;
 pub mod panic_finder;
 pub mod parse_result;
 mod tests;
+
+pub type AccountId = near_sdk::AccountId;
