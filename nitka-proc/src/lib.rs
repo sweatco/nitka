@@ -134,7 +134,7 @@ fn convert_method_to_implementation(trait_method: &mut TraitItemFn) -> ItemFn {
 
     let result: ItemFn = parse_quote!(
         fn #fn_name(#fn_args) #fn_ret {
-            integration_utils::integration_contract::make_call(self.contract, #fn_name_str) #deposit #call_args
+            nitka::integration_contract::make_call(self.contract, #fn_name_str) #deposit #call_args
         }
     );
 
@@ -168,7 +168,7 @@ fn convert_method_to_integration_trait(trait_method: &mut TraitItemFn) -> TraitI
         ret = ret[start + 1..end].to_string();
     }
 
-    let ret: Result<ReturnType, _> = parse_str(&format!("-> integration_utils::contract_call::ContractCall<{ret}>"));
+    let ret: Result<ReturnType, _> = parse_str(&format!("-> nitka::contract_call::ContractCall<{ret}>"));
 
     method.sig.output = ret.unwrap();
 

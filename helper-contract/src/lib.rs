@@ -1,7 +1,7 @@
 pub mod api;
 
 use near_sdk::{
-    borsh::{self, BorshDeserialize, BorshSerialize},
+    borsh::{BorshDeserialize, BorshSerialize},
     env, near_bindgen, PanicOnDefault, Timestamp,
 };
 
@@ -9,6 +9,7 @@ use crate::api::HelperApi;
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
+#[borsh(crate = "near_sdk::borsh")]
 pub struct Contract {
     /// Some data
     data: String,

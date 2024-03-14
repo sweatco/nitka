@@ -3,7 +3,7 @@ pub struct MyContract<'a> {
     pub contract: &'a near_workspaces::Contract,
 }
 
-#[integration_trait::make_integration_version]
+#[nitka_proc::make_integration_version]
 pub trait ContractApi {
     fn new() -> Self;
     fn test(&mut self) -> u32;

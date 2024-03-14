@@ -1,0 +1,22 @@
+[package]
+name = "nitka"
+version = "0.1.0"
+edition = "2021"
+description = "NITKA - Near Integration Test Kit and Automation"
+homepage = "https://github.com/sweatco/nitka"
+repository = "https://github.com/sweatco/nitka"
+license = "MIT OR Apache-2.0"
+
+
+[lib]
+
+[dependencies]
+anyhow = { workspace = true }
+dotenv = "0.15.0"
+near-units = "0.2"
+futures = "0.3"
+tokio = { workspace = true }
+fake = "2.9"
+
+near-workspaces = { workspace = true }
+near-sdk = { workspace = true }

@@ -1,2 +1,2 @@
-# integration-utils
-Utils and helpers for smart contract integration tests
+# nitka
+Near Integration Test Kit and Automation

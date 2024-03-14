@@ -3,7 +3,7 @@
 #![allow(unused_imports)]
 
 use anyhow::Result;
-use integration_utils::{build::git_root, misc::load_wasm};
+use nitka::{build::git_root, misc::load_wasm};
 use near_workspaces::Account;
 
 use crate::misc::build_with_version;

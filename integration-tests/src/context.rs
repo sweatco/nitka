@@ -1,16 +1,14 @@
 #![cfg(test)]
 
-use async_trait::async_trait;
 use helper_model::api::{HelperApiIntegration, HelperContract};
 use my_model::api::{ContractApiIntegration, MyContract};
 use near_workspaces::Account;
 
-pub type Context = integration_utils::context::Context<near_workspaces::network::Sandbox>;
+pub type Context = nitka::context::Context<near_workspaces::network::Sandbox>;
 
 pub const HELPER_CONTRACT: &str = "helper_contract";
 pub const MY_CONTRACT: &str = "my_contract";
 
-#[async_trait]
 pub trait IntegrationContext {
     async fn manager(&mut self) -> anyhow::Result<Account>;
     async fn alice(&mut self) -> anyhow::Result<Account>;
@@ -19,7 +17,6 @@ pub trait IntegrationContext {
     fn helper(&self) -> HelperContract;
 }
 
-#[async_trait]
 impl IntegrationContext for Context {
     async fn manager(&mut self) -> anyhow::Result<Account> {
         self.account("manager").await

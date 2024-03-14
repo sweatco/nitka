@@ -1,4 +1,4 @@
-use integration_trait::make_integration_version;
+use nitka_proc::make_integration_version;
 use near_sdk::{json_types::U128, PromiseOrValue};
 use near_workspaces::Contract;
 
@@ -20,9 +20,6 @@ pub trait ContractNameInterface {
     /// Initialize multisig contract.
     /// @params num_confirmations: k of n signatures required to perform operations.
     fn burn(&mut self) -> PromiseOrValue<U128>;
-
-    #[update]
-    fn update_contract(&mut self);
 }
 
 fn method_for_deposit() -> u128 {

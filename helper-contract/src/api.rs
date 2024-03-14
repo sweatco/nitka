@@ -1,4 +1,4 @@
-use integration_trait::make_integration_version;
+use nitka_proc::make_integration_version;
 use near_sdk::Timestamp;
 
 #[cfg(feature = "integration-test")]

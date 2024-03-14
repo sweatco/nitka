@@ -16,7 +16,6 @@ ed25519-dalek = { workspace = true }
 mutants = { workspace = true }
 
 near-sdk = { workspace = true }
-#near-self-update = { workspace = true }
 near-contract-standards = { workspace = true }
 
 my-model = { workspace = true }

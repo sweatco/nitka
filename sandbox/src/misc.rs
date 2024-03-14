@@ -4,7 +4,7 @@ use std::{
 };
 
 use anyhow::{bail, Result};
-use integration_utils::{build::git_root, misc::load_wasm};
+use nitka::{build::git_root, misc::load_wasm};
 
 fn run_command<const N: usize, const I: usize>(args: [&str; N], env: [(&str, &str); I]) -> Result<()> {
     let mut command = Command::new(args.first().unwrap());

@@ -10,10 +10,9 @@ name = "sandbox"
 [dependencies]
 tokio = { workspace = true }
 anyhow = { workspace = true }
-async-trait = { workspace = true }
 
 near-sdk = { workspace = true }
 near-workspaces = { workspace= true }
 
-integration-trait = { workspace = true }
-integration-utils = { workspace = true }
+nitka = { workspace = true }
+nitka-proc = { workspace = true }

@@ -9,13 +9,13 @@ name = "my_model"
 
 [features]
 default = []
-integration-test = ["dep:integration-utils", "dep:near-workspaces"]
+integration-test = ["dep:nitka", "dep:near-workspaces"]
 
 [dependencies]
 anyhow = { workspace = true }
 near-sdk = { workspace = true }
-async-trait = { workspace = true }
-integration-trait = { workspace = true }
 
-integration-utils = { workspace = true, optional = true }
+nitka = { workspace = true, optional = true }
+nitka-proc = { workspace = true }
+
 near-workspaces = { workspace = true, optional = true }

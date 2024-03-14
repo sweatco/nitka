@@ -2,12 +2,13 @@ use std::{collections::HashSet, str::FromStr};
 
 use my_model::api::ContractApi;
 use near_sdk::{
-    borsh::{self, BorshDeserialize, BorshSerialize},
+    borsh::{BorshDeserialize, BorshSerialize},
     collections::{LookupMap, UnorderedMap, UnorderedSet, Vector},
     env, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault,
 };
 
 #[derive(BorshStorageKey, BorshSerialize)]
+#[borsh(crate = "near_sdk::borsh")]
 pub(crate) enum StorageKey {
     Lockups,
     AccountLockups,
@@ -19,6 +20,7 @@ pub(crate) enum StorageKey {
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
+#[borsh(crate = "near_sdk::borsh")]
 pub struct Contract {
     pub token_account_id: AccountId,
     pub lockups: Vector<AccountId>,
