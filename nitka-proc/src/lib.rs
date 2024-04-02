@@ -168,7 +168,7 @@ fn convert_method_to_integration_trait(trait_method: &mut TraitItemFn) -> TraitI
         ret = ret[start + 1..end].to_string();
     }
 
-    let ret: Result<ReturnType, _> = parse_str(&format!("-> nitka::contract_call::ContractCall<{ret}>"));
+    let ret: Result<ReturnType, _> = parse_str(&format!("-> nitka::ContractCall<{ret}>"));
 
     method.sig.output = ret.unwrap();
 

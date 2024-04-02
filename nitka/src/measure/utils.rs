@@ -37,7 +37,7 @@ where
 
 pub fn pretty_gas_string(gas: Gas) -> String {
     format!(
-        "{} T {} G total: {}",
+        "{} TGas {} GGas total: {}",
         gas.as_tgas(),
         strip_tgas(gas).as_ggas(),
         gas.as_gas()

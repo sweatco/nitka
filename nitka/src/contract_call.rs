@@ -5,7 +5,7 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use near_sdk::{
     serde::{de::DeserializeOwned, Serialize},
     serde_json::to_vec,
@@ -13,14 +13,16 @@ use near_sdk::{
 use near_workspaces::{
     operations::CallTransaction,
     result::{ExecutionFailure, ExecutionSuccess},
-    types::NearToken,
+    types::{Gas, NearToken},
     Account, Contract,
 };
+
+use crate::measure::utils::pretty_gas_string;
 
 static LOGS_ENABLED: AtomicBool = AtomicBool::new(true);
 static FULL_OUTPUT_ENABLED: AtomicBool = AtomicBool::new(false);
 
-use crate::{measure::outcome_storage::OutcomeStorage, parse_result::ParseResult};
+use crate::parse_result::ParseResult;
 
 pub struct ContractCall<T> {
     method: String,
@@ -32,7 +34,7 @@ pub struct ContractCall<T> {
 }
 
 impl<T> ContractCall<T> {
-    pub(crate) fn new(method: &str, contract: Contract) -> Self {
+    pub fn new(method: &str, contract: Contract) -> Self {
         Self {
             method: method.to_string(),
             user_account: None,
@@ -89,9 +91,6 @@ impl<T: Send + DeserializeOwned> ContractCall<T> {
         println!("▶️ {}", self.method);
         let transaction = self.prepare_transaction();
         let result = transaction.transact().await.unwrap().into_result();
-        if let Ok(success) = &result {
-            OutcomeStorage::add_result(success);
-        }
         log_result(result)
     }
 
@@ -101,6 +100,38 @@ impl<T: Send + DeserializeOwned> ContractCall<T> {
 
     pub async fn result(self) -> Result<ExecutionSuccess, ExecutionFailure> {
         self.call_transaction().await
+    }
+
+    pub async fn expect_error(self, error_message: &str) -> Result<()> {
+        let Err(err) = self.call().await else {
+            bail!("This call should fail");
+        };
+
+        if err.to_string().contains(error_message) {
+            return Ok(());
+        };
+
+        bail!("Expected error: {error_message}.\nGot:\n{err}")
+    }
+
+    pub async fn expect_log(self, log: &str) -> Result<()> {
+        let result = self.result().await?;
+
+        if result.logs().contains(&log) {
+            return Ok(());
+        }
+
+        bail!("Expected log: '{log}' not found.\nLogs: {:#?}", result.logs())
+    }
+
+    pub async fn dont_expect_log(self, log: &str) -> Result<()> {
+        let result = self.result().await?;
+
+        if result.logs().contains(&log) {
+            bail!("Log '{log}' is not expected")
+        }
+
+        Ok(())
     }
 }
 
@@ -131,7 +162,7 @@ fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<Exec
                 }
             }
 
-            println!("  ⛽ {} TGas burned", result.total_gas_burnt.as_tgas());
+            print_gas(result.total_gas_burnt);
         }
         Err(ref error) => {
             if LOGS_ENABLED.load(Ordering::Relaxed) {
@@ -140,7 +171,7 @@ fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<Exec
                 }
             }
 
-            println!("  ⛽ {} TGas burned", error.total_gas_burnt.as_tgas());
+            print_gas(error.total_gas_burnt);
         }
     }
 
@@ -149,4 +180,8 @@ fn log_result(result: Result<ExecutionSuccess, ExecutionFailure>) -> Result<Exec
     }
 
     result
+}
+
+fn print_gas(gas: Gas) {
+    println!("  ⛽ {}", pretty_gas_string(gas));
 }

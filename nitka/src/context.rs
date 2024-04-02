@@ -12,6 +12,7 @@ use crate::{build::build_contract, misc::load_wasm};
 
 const ONE_MINUTE_BLOCKS_HEIGHT: u64 = 240;
 
+#[derive(Debug)]
 pub struct Context<T> {
     root_account: Account,
     pub worker: Worker<T>,
@@ -66,7 +67,7 @@ impl<Network: DevNetwork + TopLevelAccountCreator + 'static> Context<Network> {
                 .await?
                 .into_result()?;
 
-            println!("@@ contract {name} deployed to {}", contract.id());
+            println!("📃 сontract {name} deployed to {}", contract.id());
 
             contracts.insert(name, contract);
         }
