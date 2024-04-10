@@ -1,11 +1,13 @@
 use std::{env, fs};
 
+use near_workspaces::AccountId;
+
 pub trait ToNear {
-    fn to_near(&self) -> near_sdk::AccountId;
+    fn to_near(&self) -> AccountId;
 }
 
 impl ToNear for near_workspaces::Account {
-    fn to_near(&self) -> crate::AccountId {
+    fn to_near(&self) -> AccountId {
         self.id().to_string().try_into().unwrap()
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "nitka-proc"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 description = "Procedural macros for NITKA - Near Integration Test Kit and Automation"
 homepage = "https://github.com/sweatco/nitka"
@@ -11,7 +11,7 @@ license = "MIT OR Apache-2.0"
 proc-macro = true
 
 [dependencies]
-quote = "1.0.35"
-syn = { version = "2.0.52", features = ["full", "extra-traits"] }
-proc-macro2 = "1.0.79"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+proc-macro2 = "1.0"
 

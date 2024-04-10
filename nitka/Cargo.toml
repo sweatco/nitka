@@ -1,6 +1,6 @@
 [package]
 name = "nitka"
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 description = "NITKA - Near Integration Test Kit and Automation"
 homepage = "https://github.com/sweatco/nitka"
@@ -12,11 +12,11 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 anyhow = { workspace = true }
-dotenv = "0.15.0"
-near-units = "0.2"
-futures = "0.3"
+serde = { workspace = true }
+serde_json = { workspace = true }
+futures = { workspace = true }
 tokio = { workspace = true }
-fake = "2.9"
+fake = { workspace = true }
+base64 = { workspace = true }
 
 near-workspaces = { workspace = true }
-near-sdk = { workspace = true }

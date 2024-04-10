@@ -1,8 +1,8 @@
 use std::mem::{size_of, MaybeUninit};
 
 use anyhow::Result;
-use near_sdk::serde::de::DeserializeOwned;
 use near_workspaces::result::{ExecutionFailure, ExecutionSuccess};
+use serde::de::DeserializeOwned;
 
 pub trait ParseResult<T: DeserializeOwned> {
     fn parse(self) -> Result<T>;

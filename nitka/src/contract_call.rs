@@ -6,16 +6,14 @@ use std::{
 };
 
 use anyhow::{bail, Result};
-use near_sdk::{
-    serde::{de::DeserializeOwned, Serialize},
-    serde_json::to_vec,
-};
 use near_workspaces::{
     operations::CallTransaction,
     result::{ExecutionFailure, ExecutionSuccess},
     types::{Gas, NearToken},
     Account, Contract,
 };
+use serde::{de::DeserializeOwned, Serialize};
+use serde_json::to_vec;
 
 use crate::measure::utils::pretty_gas_string;
 

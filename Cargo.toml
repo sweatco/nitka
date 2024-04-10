@@ -2,30 +2,16 @@
 
 resolver = "2"
 
-default-members = ["my-contract"]
-members = ["model", "my-contract", "helper-contract", "integration-tests", "nitka", "nitka-proc", "nitka-proc-tests", "sandbox"]
+default-members = ["nitka"]
+members = ["nitka", "nitka-proc"]
 
 [workspace.dependencies]
-anyhow = "1.0.75"
-fake = "2.8.0"
-rand = "0.8.5"
-futures = "0.3.28"
-num-format = "0.4.4"
-itertools = "0.12.0"
-ed25519-dalek = { version = "2.0.0", features = ["rand_core"] }
-base64 = "0.22.0"
-sha256 = "1.3.0"
-mutants = "0.0.3"
-tokio = "1.36"
+anyhow = "1.0"
+serde = "1.0"
+serde_json = "1.0"
+futures = "0.3"
+tokio = "1.37"
+fake = "2.9"
+base64 = "0.22"
 
-nitka = { path = "nitka" }
-nitka-proc = { path = "nitka-proc" }
-
-helper-model = { path = "helper-contract" }
-
-my-model = { path = "model" }
-
-near-workspaces = "0.10.0"
-
-near-sdk = "5.1.0"
-near-contract-standards = "5.1.0"
+near-workspaces = "0.10"
