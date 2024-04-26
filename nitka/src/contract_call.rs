@@ -26,6 +26,7 @@ pub struct ContractCall<T> {
     method: String,
     user_account: Option<Account>,
     args: Vec<u8>,
+    gas: Option<Gas>,
     deposit: NearToken,
     contract: Contract,
     _p: PhantomData<T>,
@@ -37,6 +38,7 @@ impl<T> ContractCall<T> {
             method: method.to_string(),
             user_account: None,
             args: vec![],
+            gas: None,
             deposit: NearToken::default(),
             contract,
             _p: PhantomData,
@@ -69,20 +71,33 @@ impl<T> ContractCall<T> {
         self.deposit = deposit;
         self
     }
+
+    pub fn gas(mut self, gas: Gas) -> Self {
+        self.gas = gas.into();
+        self
+    }
 }
 
 impl<T: Send + DeserializeOwned> ContractCall<T> {
     fn prepare_transaction(&self) -> CallTransaction {
         let method = self.method.clone();
 
-        let transaction = if let Some(user_account) = self.user_account.clone() {
+        let tx = if let Some(user_account) = self.user_account.clone() {
             println!("Calling with account: {user_account:?}");
             user_account.call(self.contract.id(), &method)
         } else {
             self.contract.call(&method)
         };
 
-        transaction.args(self.args.clone()).max_gas().deposit(self.deposit)
+        let tx = tx.args(self.args.clone());
+
+        let tx = if let Some(gas) = self.gas {
+            tx.gas(gas)
+        } else {
+            tx.max_gas()
+        };
+
+        tx.deposit(self.deposit)
     }
 
     async fn call_transaction(&self) -> Result<ExecutionSuccess, ExecutionFailure> {

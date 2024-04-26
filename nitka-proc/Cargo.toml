@@ -1,6 +1,6 @@
 [package]
 name = "nitka-proc"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 description = "Procedural macros for NITKA - Near Integration Test Kit and Automation"
 homepage = "https://github.com/sweatco/nitka"

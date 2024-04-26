@@ -84,7 +84,7 @@ mod test {
     fn pretty_gas_string_test() {
         assert_eq!(
             pretty_gas_string(Gas::from_ggas(5555)),
-            "5 T 555 G total: 5555000000000"
+            "5 TGas 555 GGas total: 5555000000000"
         );
     }
 
