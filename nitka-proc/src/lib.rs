@@ -49,7 +49,7 @@ pub fn make_integration_version(_args: TokenStream, stream: TokenStream) -> Toke
 
     quote! {
 
-        #[cfg(feature = "release-api")]
+        #[cfg(not(feature = "integration-api"))]
         #input
 
         #[cfg(feature = "integration-api")]

@@ -1,6 +1,6 @@
 [package]
 name = "nitka"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 description = "NITKA - Near Integration Test Kit and Automation"
 homepage = "https://github.com/sweatco/nitka"
@@ -11,6 +11,10 @@ license = "MIT OR Apache-2.0"
 [lib]
 
 [dependencies]
+nitka-proc = { workspace = true }
+cfg-if = { workspace = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 anyhow = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -20,3 +24,4 @@ fake = { workspace = true }
 base64 = { workspace = true }
 
 near-workspaces = { workspace = true }
+near-sdk = { workspace = true }
