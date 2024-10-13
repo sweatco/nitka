@@ -7,7 +7,7 @@ pub struct Unwrap<T> {
     val: Option<T>,
 }
 
-impl<T> Default for Unwrap<T>  {
+impl<T> Default for Unwrap<T> {
     fn default() -> Self {
         Self { val: None }
     }

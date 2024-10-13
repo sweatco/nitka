@@ -161,7 +161,7 @@ fn convert_method_to_integration_trait(trait_method: &mut TraitItemFn) -> TraitI
     } else {
         method.sig.inputs[0] = self_arg;
     }
-    
+
     if ret.starts_with(":: near_sdk :: PromiseOrValue <") {
         let start = ret.find('<').unwrap();
         let end = ret.find('>').unwrap();

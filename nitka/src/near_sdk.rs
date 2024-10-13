@@ -50,21 +50,6 @@ pub mod json_types {
                     ))
                 }
             }
-
-            #[cfg(feature = "abi")]
-            impl schemars::JsonSchema for $iden {
-                fn is_referenceable() -> bool {
-                    false
-                }
-
-                fn schema_name() -> String {
-                    String::schema_name()
-                }
-
-                fn json_schema(gen: &mut schemars::gen::SchemaGenerator) -> schemars::schema::Schema {
-                    String::json_schema(gen)
-                }
-            }
         };
     }
 
@@ -94,7 +79,7 @@ pub mod json_types {
         }
     }
 
-    /// Convenience module to allow anotating a serde structure as base64 bytes.
+    /// Convenience module to allow annotating a serde structure as base64 bytes.
     ///
     /// # Example
     /// ```ignore
@@ -111,7 +96,7 @@ pub mod json_types {
         use base64::Engine;
         use serde::de;
 
-        use super::*;
+        use super::{Deserialize, Deserializer, Serializer};
 
         pub fn serialize<S>(bytes: &[u8], serializer: S) -> Result<S::Ok, S::Error>
         where

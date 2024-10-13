@@ -14,4 +14,4 @@ tokio = "1.37"
 fake = "2.9"
 base64 = "0.22"
 
-near-workspaces = "0.10"
+near-workspaces = "0.14.0"

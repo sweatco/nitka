@@ -12,7 +12,7 @@ tokio = { workspace = true }
 anyhow = { workspace = true }
 
 near-sdk = { workspace = true }
-near-workspaces = { workspace= true }
+near-workspaces = { workspace = true }
 
 nitka = { workspace = true }
 nitka-proc = { workspace = true }

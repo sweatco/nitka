@@ -27,4 +27,3 @@ near-workspaces = { workspace = true }
 
 my-model = { workspace = true, features = ["integration-test"] }
 helper-model = { workspace = true, features = ["integration-test"] }
-
